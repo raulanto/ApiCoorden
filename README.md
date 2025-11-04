@@ -1,21 +1,21 @@
-# Clonar repositorio
+## Clonar repositorio
 git clone <tu-repo>
 cd coordinate-api
 
-# Crear entorno virtual
+## Crear entorno virtual
 python -m venv venv
 source venv/bin/activate  # En Windows: venv\Scripts\activate
 
-# Instalar dependencias
+## Instalar dependencias
 pip install -r requirements.txt
 
-# Aplicar migraciones
+## Aplicar migraciones
 python manage.py migrate
 
-# Crear superusuario (opcional)
+## Crear superusuario (opcional)
 python manage.py createsuperuser
 
-# Ejecutar servidor
+## Ejecutar servidor
 python manage.py runserver
 
 ## Endpoints Disponibles
@@ -143,3 +143,5 @@ points_in_area = filter_points_by_bbox(all_points, bbox)
 - Usado en mapas web (Google, OSM)
 - Proyección cilíndrica
 - Optimizado para visualización
+
+puedes probar la api https://api-coorden.vercel.app/
