@@ -101,7 +101,7 @@ GET /api/coordinates/info/?lat=19.4326&lon=-99.1332
 ## 🧪 Ejecutar Tests
 
 ```bash
-python manage.py test coordinates
+python manage.py test
 ```
 
 ## 📊 Casos de Uso
