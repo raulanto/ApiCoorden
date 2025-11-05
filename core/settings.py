@@ -30,7 +30,7 @@ ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
 ]
-# Application definition
+
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -151,14 +151,16 @@ REST_FRAMEWORK = {
         'rest_framework.throttling.AnonRateThrottle',
         'rest_framework.throttling.UserRateThrottle'
     ],
-    'DEFAULT_THROTTLE_RATES': {
-        'anon': '100/hour',
-        'user': '1000/hour'
-    }
 }
 
 SPECTACULAR_SETTINGS = {
     'TITLE': 'API de Coordenadas',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
+    "SWAGGER_UI_SETTINGS": {
+        "deepLinking": True,
+        "persistAuthorization": True,
+        "displayOperationId": True,
+
+    },
 }
