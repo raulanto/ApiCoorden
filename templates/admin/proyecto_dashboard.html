@@ -1,0 +1,155 @@
+<!-- templates/admin/proyecto_dashboard.html -->
+{% extends "admin/base_site.html" %}
+{% load i18n static %}
+
+{% block title %}Dashboard - {{ proyecto.nombre }}{% endblock %}
+
+{% block extrahead %}
+    {{ block.super }}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+{% endblock %}
+
+{% block content %}
+    <div class="flex flex-col gap-6">
+
+        <!-- Header -->
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+            <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                📊 Dashboard: {{ proyecto.nombre }}
+            </h1>
+            <p class="text-gray-600 dark:text-gray-400">
+                Código: {{ proyecto.codigo }} | Cliente: {{ proyecto.cliente }}
+            </p>
+        </div>
+
+        <!-- Tarjetas de Estadísticas -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+
+            <div class="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-6 text-center">
+                <div class="text-4xl font-bold text-blue-600 dark:text-blue-400 mb-2">
+                    {{ total_elementos }}
+                </div>
+                <div class="text-sm text-gray-600 dark:text-gray-400 uppercase tracking-wide">
+                    Total Elementos
+                </div>
+            </div>
+
+            <div class="bg-green-50 dark:bg-green-900/20 rounded-lg p-6 text-center">
+                <div class="text-4xl font-bold text-green-600 dark:text-green-400 mb-2">
+                    {{ terminados }}
+                </div>
+                <div class="text-sm text-gray-600 dark:text-gray-400 uppercase tracking-wide">
+                    Terminados
+                </div>
+            </div>
+
+            <div class="bg-yellow-50 dark:bg-yellow-900/20 rounded-lg p-6 text-center">
+                <div class="text-4xl font-bold text-yellow-600 dark:text-yellow-400 mb-2">
+                    {{ en_proceso }}
+                </div>
+                <div class="text-sm text-gray-600 dark:text-gray-400 uppercase tracking-wide">
+                    En Proceso
+                </div>
+            </div>
+
+            <div class="bg-red-50 dark:bg-red-900/20 rounded-lg p-6 text-center">
+                <div class="text-4xl font-bold text-red-600 dark:text-red-400 mb-2">
+                    {{ avance_promedio|floatformat:0 }}%
+                </div>
+                <div class="text-sm text-gray-600 dark:text-gray-400 uppercase tracking-wide">
+                    Avance Promedio
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Gráficas -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+            <!-- Gráfica de Avance -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                    Avance por Estado
+                </h3>
+                <canvas id="estadosChart" class="max-h-64"></canvas>
+            </div>
+
+            <!-- Gráfica de Reportes -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                    Reportes de la Semana
+                </h3>
+                <canvas id="reportesChart" class="max-h-64"></canvas>
+            </div>
+
+        </div>
+
+        <!-- Botones de Acción -->
+        <div class="flex gap-4">
+            <a href="{% url 'admin:sisgestionobras_proyecto_change' proyecto.id %}"
+               class="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition">
+                ⬅️ Volver al Proyecto
+            </a>
+            <a href="{% url 'admin:proyecto_mapa' proyecto.id %}"
+               class="inline-flex items-center px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition">
+                🗺️ Ver Mapa
+            </a>
+        </div>
+
+    </div>
+
+    {% block extrajs %}
+        {{ block.super }}
+        <script>
+            // Gráfica de Estados
+            const ctx1 = document.getElementById('estadosChart');
+            if (ctx1) {
+                new Chart(ctx1, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Terminados', 'En Proceso', 'Pendientes'],
+                        datasets: [{
+                            data: [{{ terminados }}, {{ en_proceso }}, {{ total_elementos|add:"-"|add:terminados|add:"-"|add:en_proceso }}],
+                            backgroundColor: ['#10b981', '#f59e0b', '#ef4444']
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        plugins: {
+                            legend: {
+                                position: 'bottom'
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Gráfica de Reportes
+            const ctx2 = document.getElementById('reportesChart');
+            if (ctx2) {
+                new Chart(ctx2, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'],
+                        datasets: [{
+                            label: 'Reportes',
+                            data: [12, 19, 15, 25, 22, 8, 5],
+                            backgroundColor: '#3b82f6'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            }
+        </script>
+    {% endblock %}
+
+{% endblock %}

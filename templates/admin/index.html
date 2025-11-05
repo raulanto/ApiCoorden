@@ -1,0 +1,60 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block extrahead %}
+<style>
+    .dashboard-welcome {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 2rem;
+        border-radius: 12px;
+        margin-bottom: 2rem;
+    }
+    .quick-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin: 2rem 0;
+    }
+    .stat-box {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        text-align: center;
+    }
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: #3b82f6;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-welcome">
+    <h1 style="margin: 0; font-size: 2rem;">👋 Bienvenido, {{ user.get_full_name|default:user.username }}</h1>
+    <p style="opacity: 0.9; margin-top: 0.5rem;">Sistema de Gestión de Obras Civiles</p>
+</div>
+
+<div class="quick-stats">
+    <div class="stat-box">
+        <div class="stat-number">{{ total_proyectos }}</div>
+        <div style="color: #64748b; margin-top: 0.5rem;">Proyectos Totales</div>
+    </div>
+    <div class="stat-box">
+        <div class="stat-number">{{ proyectos_activos }}</div>
+        <div style="color: #64748b; margin-top: 0.5rem;">En Ejecución</div>
+    </div>
+    <div class="stat-box">
+        <div class="stat-number">{{ total_elementos }}</div>
+        <div style="color: #64748b; margin-top: 0.5rem;">Elementos</div>
+    </div>
+    <div class="stat-box">
+        <div class="stat-number">{{ reportes_semana }}</div>
+        <div style="color: #64748b; margin-top: 0.5rem;">Reportes (7 días)</div>
+    </div>
+</div>
+
+{{ block.super }}
+{% endblock %}

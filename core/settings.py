@@ -54,9 +54,9 @@ INSTALLED_APPS = [
     'corsheaders',
     'api',
     'drf_spectacular',
-    'sisgestionobras',
-
+    'import_export',
     'django_filters',
+    'sisgestionobras'
 ]
 
 MIDDLEWARE = [
@@ -80,7 +80,8 @@ ROOT_URLCONF = 'core.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates']
+        ,
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -135,10 +136,10 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-# STATICFILES_DIRS = [
-#     os.path.join(BASE_DIR, 'static'),
-# ]
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles_build', 'static')
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
 
 # WhiteNoise configuration
 # STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
@@ -150,162 +151,137 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ALLOW_ALL_ORIGINS = True  # En producción, especifica dominios específicos
 CORS_ALLOW_CREDENTIALS = True
 
-# REST_FRAMEWORK = {
-#     'DEFAULT_RENDERER_CLASSES': [
-#         'rest_framework.renderers.JSONRenderer',
-#         'rest_framework.renderers.BrowsableAPIRenderer',
-#     ],
-#     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
-#     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-#     'PAGE_SIZE': 100,
-#     'DEFAULT_THROTTLE_CLASSES': [
-#         'rest_framework.throttling.AnonRateThrottle',
-#         'rest_framework.throttling.UserRateThrottle'
-#     ],
-# }
-#
-# SPECTACULAR_SETTINGS = {
-#     'TITLE': 'API de Coordenadas',
-#     'VERSION': '1.0.0',
-#     'SERVE_INCLUDE_SCHEMA': False,
-#     "SWAGGER_UI_SETTINGS": {
-#         "deepLinking": True,
-#         "persistAuthorization": True,
-#         "displayOperationId": True,
-#
-#     },
-# }
-#
-# UNFOLD = {
-#     "SITE_TITLE": "Sistema de Gestión de Obras",
-#     "SITE_HEADER": "🏗️ Gestión de Obras Civiles",
-#     "SITE_URL": "/",
-#     "SITE_ICON": {
-#         "light": lambda request: static("icon-light.svg"),
-#         "dark": lambda request: static("icon-dark.svg"),
-#     },
-#
-#     # Colores del tema
-#     "COLORS": {
-#         "primary": {
-#             "50": "239 246 255",
-#             "100": "219 234 254",
-#             "200": "191 219 254",
-#             "300": "147 197 253",
-#             "400": "96 165 250",
-#             "500": "59 130 246",  # Color principal
-#             "600": "37 99 235",
-#             "700": "29 78 216",
-#             "800": "30 64 175",
-#             "900": "30 58 138",
-#             "950": "23 37 84",
-#         },
-#     },
-#
-#     # Sidebar
-#     "SIDEBAR": {
-#         "show_search": True,
-#         "show_all_applications": True,
-#         "navigation": [
-#             {
-#                 "title": _("Dashboard"),
-#                 "separator": True,
-#                 "collapsible": False,
-#                 "items": [
-#                     {
-#                         "title": _("Panel Principal"),
-#                         "icon": "dashboard",
-#                         "link": reverse_lazy("admin:index"),
-#                         "permission": lambda request: request.user.is_staff,
-#                     },
-#                     {
-#                         "title": _("Reportes"),
-#                         "icon": "assessment",
-#                         "link": reverse_lazy("admin:reportes_dashboard"),
-#                         "permission": lambda request: request.user.is_staff,
-#                     },
-#                 ],
-#             },
-#             {
-#                 "title": _("Proyectos"),
-#                 "separator": True,
-#                 "collapsible": True,
-#                 "items": [
-#                     {
-#                         "title": _("Todos los Proyectos"),
-#                         "icon": "business",
-#                         "link": reverse_lazy("admin:api_proyecto_changelist"),
-#                     },
-#                     {
-#                         "title": _("Elementos Constructivos"),
-#                         "icon": "construction",
-#                         "link": reverse_lazy("admin:api_elementoconstructivo_changelist"),
-#                     },
-#                     {
-#                         "title": _("Puntos de Control"),
-#                         "icon": "place",
-#                         "link": reverse_lazy("admin:api_puntocontrol_changelist"),
-#                     },
-#                 ],
-#             },
-#             {
-#                 "title": _("Operaciones"),
-#                 "separator": True,
-#                 "collapsible": True,
-#                 "items": [
-#                     {
-#                         "title": _("Cuadrillas"),
-#                         "icon": "groups",
-#                         "link": reverse_lazy("admin:api_cuadrilla_changelist"),
-#                     },
-#                     {
-#                         "title": _("Reportes de Avance"),
-#                         "icon": "timeline",
-#                         "link": reverse_lazy("admin:api_reporteavance_changelist"),
-#                     },
-#                     {
-#                         "title": _("Volúmenes"),
-#                         "icon": "analytics",
-#                         "link": reverse_lazy("admin:api_volumenterraceria_changelist"),
-#                     },
-#                 ],
-#             },
-#             {
-#                 "title": _("Configuración"),
-#                 "separator": True,
-#                 "collapsible": True,
-#                 "items": [
-#                     {
-#                         "title": _("Usuarios"),
-#                         "icon": "person",
-#                         "link": reverse_lazy("admin:auth_user_changelist"),
-#                     },
-#                     {
-#                         "title": _("Grupos"),
-#                         "icon": "group",
-#                         "link": reverse_lazy("admin:auth_group_changelist"),
-#                     },
-#                 ],
-#             },
-#         ],
-#     },
-#
-#     # Tabs en la parte superior
-#     "TABS": [
-#         {
-#             "models": [
-#                 "api.proyecto",
-#             ],
-#             "items": [
-#                 {
-#                     "title": _("Dashboard"),
-#                     "link": reverse_lazy("admin:api_proyecto_changelist"),
-#                 },
-#                 {
-#                     "title": _("Mapa"),
-#                     "link": reverse_lazy("admin:mapa_proyectos"),
-#                 },
-#             ],
-#         },
-#     ],
-# }
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
+    ],
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 100,
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.AnonRateThrottle',
+        'rest_framework.throttling.UserRateThrottle'
+    ],
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'API de Coordenadas',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    "SWAGGER_UI_SETTINGS": {
+        "deepLinking": True,
+        "persistAuthorization": True,
+        "displayOperationId": True,
+
+    },
+}
+
+UNFOLD = {
+    "SITE_TITLE": "Sistema de Gestión de Obras",
+    "SITE_HEADER": "Gestión de Obras Civiles",
+    "SITE_URL": "/",
+
+
+    # Colores del tema
+    "COLORS": {
+        "primary": {
+            "50": "239 246 255",
+            "100": "219 234 254",
+            "200": "191 219 254",
+            "300": "147 197 253",
+            "400": "96 165 250",
+            "500": "59 130 246",
+            "600": "37 99 235",
+            "700": "29 78 216",
+            "800": "30 64 175",
+            "900": "30 58 138",
+            "950": "23 37 84",
+        },
+    },
+
+    # Sidebar
+    "SIDEBAR": {
+        "show_search": True,
+        "show_all_applications": True,
+        "navigation": [
+            {
+                "title": _("Dashboard"),
+                "separator": True,
+                "collapsible": False,
+                "items": [
+                    {
+                        "title": _("Panel Principal"),
+                        "icon": "dashboard",
+                        "link": reverse_lazy("admin:index"),
+                        "permission": lambda request: request.user.is_staff,
+                    },
+
+                ],
+            },
+            {
+                "title": _("Proyectos"),
+                "separator": True,
+                "collapsible": True,
+                "items": [
+                    {
+                        "title": _("Todos los Proyectos"),
+                        "icon": "business",
+                        "link": reverse_lazy("admin:sisgestionobras_proyecto_changelist"),
+                    },
+                    {
+                        "title": _("Elementos Constructivos"),
+                        "icon": "construction",
+                        "link": reverse_lazy("admin:sisgestionobras_elementoconstructivo_changelist"),
+                    },
+                    {
+                        "title": _("Puntos de Control"),
+                        "icon": "place",
+                        "link": reverse_lazy("admin:sisgestionobras_puntocontrol_changelist"),
+                    },
+                ],
+            },
+            {
+                "title": _("Operaciones"),
+                "separator": True,
+                "collapsible": True,
+                "items": [
+                    {
+                        "title": _("Cuadrillas"),
+                        "icon": "groups",
+                        "link": reverse_lazy("admin:sisgestionobras_cuadrilla_changelist"),
+                    },
+                    {
+                        "title": _("Reportes de Avance"),
+                        "icon": "timeline",
+                        "link": reverse_lazy("admin:sisgestionobras_reporteavance_changelist"),
+                    },
+                    {
+                        "title": _("Volúmenes"),
+                        "icon": "analytics",
+                        "link": reverse_lazy("admin:sisgestionobras_volumenterraceria_changelist"),
+                    },
+                ],
+            },
+
+            {
+                "title": _("Configuración"),
+                "separator": True,
+                "collapsible": True,
+                "items": [
+                    {
+                        "title": _("Usuarios"),
+                        "icon": "person",
+                        "link": reverse_lazy("admin:auth_user_changelist"),
+                    },
+                    {
+                        "title": _("Grupos"),
+                        "icon": "group",
+                        "link": reverse_lazy("admin:auth_group_changelist"),
+                    },
+                ],
+            },
+        ],
+    },
+
+}

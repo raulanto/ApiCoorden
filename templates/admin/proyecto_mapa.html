@@ -1,0 +1,136 @@
+<!-- templates/admin/proyecto_mapa.html -->
+{% extends "admin/base_site.html" %}
+{% load i18n static %}
+
+{% block title %}Mapa - {{ proyecto.nombre }}{% endblock %}
+
+{% block extrahead %}
+{{ block.super }}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+    #map {
+        height: calc(100vh - 300px);
+        min-height: 500px;
+        border-radius: 0.5rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="flex flex-col gap-6">
+
+    <!-- Header -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+        <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+            🗺️ Mapa: {{ proyecto.nombre }}
+        </h1>
+        <p class="text-gray-600 dark:text-gray-400">
+            {{ elementos|length }} elementos en el mapa
+        </p>
+    </div>
+
+    <!-- Mapa -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+        <div id="map"></div>
+    </div>
+
+    <!-- Leyenda -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Leyenda</h3>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="flex items-center gap-2">
+                <div class="w-5 h-5 rounded-full bg-green-500 border-2 border-white shadow"></div>
+                <span class="text-sm text-gray-700 dark:text-gray-300">Terminado</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <div class="w-5 h-5 rounded-full bg-yellow-500 border-2 border-white shadow"></div>
+                <span class="text-sm text-gray-700 dark:text-gray-300">En Proceso</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <div class="w-5 h-5 rounded-full bg-red-500 border-2 border-white shadow"></div>
+                <span class="text-sm text-gray-700 dark:text-gray-300">Pendiente</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <div class="w-5 h-5 rounded-full bg-blue-500 border-2 border-white shadow"></div>
+                <span class="text-sm text-gray-700 dark:text-gray-300">Benchmark</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Botones -->
+    <div class="flex gap-4">
+        <a href="{% url 'admin:proyecto_dashboard' proyecto.id %}"
+           class="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition">
+            ⬅️ Volver al Dashboard
+        </a>
+        <a href="{% url 'admin:sisgestionobras_proyecto_change' proyecto.id %}"
+           class="inline-flex items-center px-6 py-3 bg-gray-600 hover:bg-gray-700 text-white font-medium rounded-lg transition">
+            📝 Editar Proyecto
+        </a>
+    </div>
+
+</div>
+
+{% block extrajs %}
+{{ block.super }}
+<script>
+// Inicializar mapa
+const map = L.map('map').setView([{{ proyecto.lat_referencia }}, {{ proyecto.lon_referencia }}], 15);
+
+// Tile layer
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap'
+}).addTo(map);
+
+// Benchmark principal
+const benchmarkIcon = L.divIcon({
+    html: '<div style="background: #3b82f6; width: 30px; height: 30px; border-radius: 50%; border: 3px solid white; box-shadow: 0 0 10px rgba(0,0,0,0.3);"></div>',
+    className: '',
+    iconSize: [30, 30],
+    iconAnchor: [15, 15]
+});
+
+L.marker([{{ proyecto.lat_referencia }}, {{ proyecto.lon_referencia }}], {icon: benchmarkIcon})
+    .addTo(map)
+    .bindPopup('<strong>🎯 Benchmark Principal</strong><br/>Elevación: {{ proyecto.elevacion_referencia }}m');
+
+// Función para obtener color según estado
+function getColor(estado) {
+    const colors = {
+        'TERMINADO': '#10b981',
+        'COLADO': '#10b981',
+        'ARMADO': '#f59e0b',
+        'CIMBRADO': '#f59e0b',
+        'EXCAVACION': '#f59e0b',
+        'REPLANTEO': '#ef4444',
+        'PENDIENTE': '#ef4444'
+    };
+    return colors[estado] || '#64748b';
+}
+
+// Agregar elementos al mapa
+const elementos = {{ elementos_json|safe }};
+
+elementos.forEach(elemento => {
+    const icon = L.divIcon({
+        html: `<div style="background: ${getColor(elemento.estado)}; width: 20px; height: 20px; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 5px rgba(0,0,0,0.3);"></div>`,
+        className: '',
+        iconSize: [20, 20],
+        iconAnchor: [10, 10]
+    });
+
+    L.marker([elemento.latitud, elemento.longitud], {icon: icon})
+        .addTo(map)
+        .bindPopup(`
+            <strong>${elemento.codigo}</strong><br/>
+            ${elemento.nombre}<br/>
+            Estado: ${elemento.estado_display}<br/>
+            Avance: ${elemento.porcentaje_avance}%<br/>
+            <a href="/admin/sisgestionobras/elementoconstructivo/${elemento.id}/change/" target="_blank">Ver detalle</a>
+        `);
+});
+</script>
+{% endblock %}
+
+{% endblock %}

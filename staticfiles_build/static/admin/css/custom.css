@@ -1,0 +1,60 @@
+/* Estilos personalizados para Unfold Admin */
+
+:root {
+    --primary-color: #3b82f6;
+    --success-color: #10b981;
+    --warning-color: #f59e0b;
+    --danger-color: #ef4444;
+}
+
+/* Badges */
+.badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.badge-primary { background: #dbeafe; color: #1e40af; }
+.badge-success { background: #d1fae5; color: #065f46; }
+.badge-warning { background: #fef3c7; color: #92400e; }
+.badge-danger { background: #fee2e2; color: #991b1b; }
+.badge-info { background: #e0e7ff; color: #3730a3; }
+.badge-secondary { background: #f1f5f9; color: #475569; }
+
+/* Progress bars */
+.progress {
+    background: #e5e7eb;
+    border-radius: 9999px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 600;
+    transition: width 0.3s ease;
+}
+
+.bg-success { background: var(--success-color); }
+.bg-warning { background: var(--warning-color); }
+.bg-danger { background: var(--danger-color); }
+
+/* Cards mejoradas */
+.admin-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+/* Tablas responsivas */
+@media (max-width: 768px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+}

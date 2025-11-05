@@ -1,0 +1,4 @@
+codigo,nombre,cliente,estado,fecha_inicio,fecha_fin_estimada,presupuesto_total
+IND-AERO-01,Planta Industrial Aeroespacial,Safran Aircraft Engines México,EJECUCION,2025-05-15,2025-12-23,78000000.00
+CC-PLAZA-SOL,Centro Comercial Plaza del Sol,Desarrollos Inmobiliarios del Bajío,PLAN,2025-09-07,2027-02-04,45000000.00
+AUT-QRO-SLP-T3,Autopista Querétaro-San Luis Potosí Tramo 3,SCT - Secretaría de Comunicaciones,EJECUCION,2025-09-28,2026-07-30,125000000.00
