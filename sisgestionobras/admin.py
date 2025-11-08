@@ -1,4 +1,4 @@
-from datetime import timedelta
+
 from django.utils.safestring import mark_safe
 from django.contrib import admin
 from django.db.models import Avg
@@ -16,9 +16,10 @@ from unfold.contrib.filters.admin import (
 )
 from unfold.decorators import display
 import json
-from .models import Proyecto, ElementoConstructivo, PuntoControl, Cuadrilla, ReporteAvance, VolumenTerraceria
+from .models import (Proyecto, ElementoConstructivo, PuntoControl,
+                     Cuadrilla, ReporteAvance, VolumenTerraceria)
 from django.contrib.admin import AdminSite
-
+from django.utils.translation import gettext_lazy as _
 
 class ProyectoResource(resources.ModelResource):
     class Meta:
@@ -322,7 +323,7 @@ class ProyectoAdmin(ModelAdmin, ImportExportModelAdmin):
             'reportes_ultima_semana': 0,
         }
 
-        return render(request, 'admin/proyecto_dashboard.html', context)
+        return render(request, 'proyecto_dashboard.html', context)
 
     def proyecto_mapa_view(self, request, object_id):
         proyecto = self.get_object(request, object_id)
@@ -348,7 +349,7 @@ class ProyectoAdmin(ModelAdmin, ImportExportModelAdmin):
             'elementos_json': json.dumps(elementos_json),  # JSON para JavaScript
         }
 
-        return render(request, 'admin/proyecto_mapa.html', context)
+        return render(request, 'proyecto_mapa.html', context)
 
     @admin.action(description="Exportar dashboard a PDF")
     def exportar_dashboard(self, request, queryset):
@@ -620,6 +621,7 @@ class CuadrillaAdmin(ModelAdmin):
     fieldsets = (
         ('Información General', {
             'fields': ('proyecto', 'nombre', 'jefe_cuadrilla', 'activa'),
+            'classes': ['tab'],
         }),
         ('Ubicación Actual', {
             'fields': (
@@ -627,6 +629,7 @@ class CuadrillaAdmin(ModelAdmin):
                 'ultima_actualizacion',
                 'elemento_actual',
             ),
+            'classes': ['tab'],
         }),
     )
 
@@ -639,7 +642,7 @@ class CuadrillaAdmin(ModelAdmin):
     def jefe_display(self, obj):
         if obj.jefe_cuadrilla:
             return format_html(
-                '👷 {}',
+                ' {}',
                 obj.jefe_cuadrilla.get_full_name() or obj.jefe_cuadrilla.username
             )
         return mark_safe('<span class="text-muted">Sin jefe</span>')
@@ -695,7 +698,8 @@ class CuadrillaAdmin(ModelAdmin):
 @admin.register(ReporteAvance)
 class ReporteAvanceAdmin(ModelAdmin):
     list_display = [
-        'elemento_codigo',
+        # 'id',
+        'elemento__codigo',
         'fecha_hora_display',
         'avance_display',
         'cuadrilla_display',
@@ -728,12 +732,14 @@ class ReporteAvanceAdmin(ModelAdmin):
                 ('fecha', 'hora'),
                 'reportado_por',
             ),
+            'classes': ['tab'],
         }),
         ('Ubicación', {
             'fields': (
                 ('latitud', 'longitud'),
                 'mapa_ubicacion',
             ),
+            'classes': ['tab'],
         }),
         ('Avance', {
             'fields': (
@@ -747,18 +753,21 @@ class ReporteAvanceAdmin(ModelAdmin):
                 'materiales_utilizados',
                 ('personal_asignado', 'horas_trabajadas'),
             ),
+            'classes': ['tab'],
         }),
         ('Evidencia', {
             'fields': (
                 'foto',
                 'foto_preview',
             ),
+            'classes': ['tab'],
         }),
         ('Validación', {
             'fields': (
                 'validado',
                 'validado_por',
             ),
+            'classes': ['tab'],
         }),
     )
 

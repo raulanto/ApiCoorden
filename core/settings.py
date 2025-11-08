@@ -177,6 +177,11 @@ SPECTACULAR_SETTINGS = {
     },
 }
 
+
+LOGIN_URL = "admin:login"
+
+LOGIN_REDIRECT_URL = reverse_lazy("admin:index")
+
 UNFOLD = {
     "SITE_TITLE": "Sistema de Gestión de Obras",
     "SITE_HEADER": "Gestión de Obras Civiles",
